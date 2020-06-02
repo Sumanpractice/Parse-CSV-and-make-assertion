@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "2eb9731f-7a06-471f-88d1-271f3a8b98ed",
+		"name": "Parse CSV and make assertions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PROBLEM",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://www.mocky.io/v2/5aaadf55330000b43e2dabab",
+					"protocol": "http",
+					"host": [
+						"www",
+						"mocky",
+						"io"
+					],
+					"path": [
+						"v2",
+						"5aaadf55330000b43e2dabab"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "471f3cab-547d-417f-a51d-0aa3b7c93a8e",
+						"exec": [
+							"pm.globals.set(\"PapaLibrary\", responseBody);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://raw.githubusercontent.com/mholt/PapaParse/master/papaparse.min.js",
+					"protocol": "https",
+					"host": [
+						"raw",
+						"githubusercontent",
+						"com"
+					],
+					"path": [
+						"mholt",
+						"PapaParse",
+						"master",
+						"papaparse.min.js"
+					]
+				},
+				"description": "https://raw.githubusercontent.com/mholt/PapaParse/master/papaparse.min.js"
+			},
+			"response": []
+		},
+		{
+			"name": "SOLUTION",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d87dbcb4-2915-4120-a064-44997fb3f2ab",
+						"exec": [
+							"//1.Setup\r",
+							"eval(pm.globals.get(\"PapaLibrary\"));\r",
+							"var Papa=this.Papa;\r",
+							"\r",
+							"\r",
+							"//2. Configure Papa\r",
+							"\r",
+							"const parserConfig ={\r",
+							"    header:true\r",
+							"};\r",
+							"\r",
+							"//3. Parse the repsonse body\r",
+							"var parsedBody=Papa.parse(responseBody,parserConfig);\r",
+							"console.log(parsedBody);\r",
+							"\r",
+							"\r",
+							"//4. Tests\r",
+							"\r",
+							"pm.test(\"ABC1234 was charged properly\", function()\r",
+							"{\r",
+							"    for (let invoice of parsedBody.data)\r",
+							"    {\r",
+							"        console.log(invoice);\r",
+							"        if(invoice.ResHash==='ABC1234')\r",
+							"        {\r",
+							"            pm.expect(invoice.InvTotal).to.eql(\"$3,500.00\");\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"//5. Clean-up\r",
+							"pm.globals.unset(\"PapaLibrary\");\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://www.mocky.io/v2/5aaadf55330000b43e2dabab",
+					"protocol": "http",
+					"host": [
+						"www",
+						"mocky",
+						"io"
+					],
+					"path": [
+						"v2",
+						"5aaadf55330000b43e2dabab"
+					]
+				},
+				"description": "http://www.mocky.io/v2/5aaadf55330000b43e2dabab"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
